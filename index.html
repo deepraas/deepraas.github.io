@@ -2,221 +2,235 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>OpenRAG Hub - 开放知识协作平台</title>
-   <style>
-   /* 可添加的进阶效果 */
-.card:hover::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, 
-        rgba(255,255,255,0.1) 0%,
-        rgba(255,255,255,0.3) 100%);
-    pointer-events: none;
-}
-
-@keyframes glow {
-    0% { opacity: 0.8; }
-    50% { opacity: 1; }
-    100% { opacity: 0.8; }
-}
-
-.stats-item p:first-child {
-    animation: glow 2s ease-in-out infinite;
-}
+    <title>鹿鸣开放知识平台 - DeepSeek生态中枢</title>
+    <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #2980b9;
-            --accent: #3498db;
-            --light-bg: #f8f9fa;
-            --dark-text: #2c3e50;
-            --gradient: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            --primary-blue: #2B6CB0;
+            --light-bg: #F7FAFC;
         }
-
         body {
-            font-family: 'Segoe UI', system-ui;
+            font-family: -apple-system, system-ui, sans-serif;
             line-height: 1.6;
-            color: var(--dark-text);
-            background: #f9fbfd;
+            margin: 0;
         }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 0 20px;
         }
-
-        /* 增强卡片设计 */
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            padding: 2rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient);
-        }
-
-        /* 网格布局优化 */
-        .grid-3col {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        /* 知识导航增强 */
-        .knowledge-nav .card {
-            min-height: 200px;
-        }
-
-        .tag-cloud {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-        }
-
-        .tag {
-            background: var(--light-bg);
-            padding: 0.5rem 1.2rem;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            border: 1px solid #e0e0e0;
-        }
-
-        .tag:hover {
-            background: var(--accent);
-            color: white;
-            transform: scale(1.05);
-        }
-
-        /* API预览样式增强 */
-        .api-preview {
-            background: #f4f8fb;
-            padding: 1.2rem;
-            border-radius: 8px;
-            font-family: 'Fira Code', monospace;
-            border: 1px solid #e0e0e0;
-            color: #2c3e50;
-            position: relative;
-        }
-
-        .api-preview::before {
-            content: 'API';
-            position: absolute;
-            top: -10px;
-            left: 15px;
-            background: var(--gradient);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-
-        /* 数据统计样式 */
-        .stats-item {
+        
+        /* 修复导航栏功能 */
+        .nav-bar {
+            background: var(--primary-blue);
             padding: 1rem;
+            display: flex;
+            gap: 2rem;
+        }
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        .nav-bar a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 核心模块容器 */
+        .section-block {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            padding: 1.5rem;
+        }
+
+        /* 知识图谱占位图 */
+        .graph-placeholder {
+            height: 400px;
             background: var(--light-bg);
             border-radius: 8px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
         }
 
-        .stats-item p:first-child {
-            color: var(--secondary);
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+        /* 贡献表单样式 */
+        .contribution-form {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
         }
-
-        /* 标题样式增强 */
-        h2 {
-            color: var(--primary);
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-left: 1rem;
+        input, textarea {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-
-        h2::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 80%;
-            background: var(--accent);
-            border-radius: 2px;
+        button {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
-
-        /* 列表样式优化 */
-        ul, ol {
-            padding-left: 1.5rem;
-        }
-
-        li {
-            margin: 0.8rem 0;
-            padding-left: 0.5rem;
-            position: relative;
-        }
-
-        li::before {
-            content: '•';
-            position: absolute;
-            left: -1rem;
-            color: var(--accent);
-        }
-
-        /* 知识分类增强 */
-        .knowledge-nav ul li {
-            padding: 0.8rem 1rem;
-            margin: 0.5rem 0;
-            background: var(--light-bg);
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .knowledge-nav ul li:hover {
-            border-left-color: var(--accent);
-            transform: translateX(5px);
-            background: white;
-        }
-
-        /* 响应式优化 */
-        @media (max-width: 768px) {
-            .knowledge-nav {
-                grid-template-columns: 1fr;
-            }
-            
-            .grid-3col {
-                grid-template-columns: 1fr;
-            }
-        }
-</style>
+    </style>
 </head>
 <body>
+    <nav class="nav-bar">
+        <div style="color:white;font-weight: bold;">鹿鸣开放知识平台</div>
+        <a href="#explore">探索知识库</a>
+        <a href="#contribute">贡献知识</a>
+        <a href="#cooperate">协作体系</a>
+        <a href="#leaderboard">贡献榜</a>
+        <a href="#dev">开发者入口</a>
+    </nav>
+
     <div class="container">
-        <!-- 知识协作体系 -->
-        <section class="card">
-            <h2>深度知识协作体系</h2>
-            <div class="grid-3col">
+        <!-- 探索知识库模块 -->
+        <div id="explore" class="section-block">
+            <h2>探索知识领域</h2>
+            <div class="graph-placeholder">
+                <svg width="100%" height="400" viewBox="0 0 800 400" style="background: #f8fafc">
+                    <!-- 核心知识节点 -->
+                    <circle cx="400" cy="200" r="40" fill="#2B6CB0" opacity="0.8">
+                        <animate attributeName="r" values="40;45;40" dur="3s" repeatCount="indefinite"/>
+                    </circle>
+                    <text x="400" y="200" text-anchor="middle" fill="white" font-size="16">鹿鸣平台</text>
+            
+                    <!-- 子节点网络 -->
+                    <g transform="rotate(0 400 200)">
+                        <circle cx="600" cy="200" r="25" fill="#48BB78"/>
+                        <line x1="440" y1="200" x2="560" y2="200" stroke="#CBD5E0" stroke-width="2"/>
+                        
+                        <circle cx="300" cy="120" r="25" fill="#F6AD55"/>
+                        <line x1="360" y1="180" x2="340" y2="140" stroke="#CBD5E0" stroke-width="2"/>
+                        
+                        <circle cx="400" cy="300" r="25" fill="#9F7AEA"/>
+                        <line x1="400" y1="240" x2="400" y2="280" stroke="#CBD5E0" stroke-width="2"/>
+                    </g>
+            
+                    <!-- 动态数据流示意 -->
+                    <path d="M400,200 Q500,150 600,200" stroke="#4299E1" fill="none" stroke-dasharray="8" opacity="0.6">
+                        <animate attributeName="stroke-dashoffset" from="0" to="40" dur="4s" repeatCount="indefinite"/>
+                    </path>
+            
+                    <!-- 知识领域标签 -->
+                    <g font-size="14" fill="#4a5568">
+                        <text x="620" y="210">人工智能</text>
+                        <circle cx="610" cy="200" r="6" fill="#48BB88"/>
+                        
+                        <text x="270" y="100">生物医药</text>
+                        <circle cx="280" cy="110" r="6" fill="#F6AD55"/>
+                        
+                        <text x="380" y="330">新能源材料</text>
+                        <circle cx="400" cy="310" r="6" fill="#9F7AEA"/>
+                    </g>
+                </svg>
+                        </div>
+                    <!-- 实时协作看板 -->        
+            <div style="margin-top:1rem;">
+                <h3>实时协作看板</h3>
+                <div style="display: grid; grid-template-columns: repeat(3,1fr); gap:1rem;">
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>最新标注</h4>
+                        <ul>
+                            <li>量子计算原理文档分块优化</li>
+                            <li>医疗知识图谱语义对齐</li>
+                            <li>金融术语标准化标注</li>
+                        </ul>
+                    </div>
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>活跃贡献者</h4>
+                        <ol>
+                            <li>张伟 (1200分)</li>
+                            <li>李芳 (980分)</li>
+                            <li>AI辅助系统 (750分)</li>
+                        </ol>
+                    </div>
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>质量评估</h4>
+                        <p>标注准确率：98.7%</p>
+                        <p>审核通过率：96.2%</p>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:1rem;">
+                <h3>技术生态</h3>
+                <div style="display: grid; grid-template-columns: repeat(3,1fr); gap:1rem;">
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>模型支持</h4>
+                        <ul>
+                            <li>DeepSeek</li>
+                            <li>LLaMA</li>
+                            <li>GPT-4</li>
+                        </ul>
+                    </div>
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>开发者资源</h4>
+                        <ul>
+                            <li>SDK下载中心</li>
+                            <li>API文档库</li>
+                            <li>调试沙盒环境</li>
+                        </ul>
+                    </div>
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>数据统计</h4>
+                        <p>日调用量：2.3M次</p>
+                        <p>响应速度：≤200ms</p>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:1rem;">
+                <h3>热门知识库</h3>
+                <div style="display: grid; grid-template-columns: repeat(3,1fr); gap:1rem;">
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>人工智能</h4>
+                        <p>包含12,450篇论文解析</p>
+                        <small>最后更新：2小时前</small>
+                    </div>
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>生物医药</h4>
+                        <p>8,230份临床试验报告</p>
+                        <small>最后更新：5小时前</small>
+                    </div>
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>新能源材料</h4>
+                        <p>6,780项专利分析</p>
+                        <small>最后更新：1天前</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 贡献知识模块 -->
+        <div id="contribute" class="section-block">
+            <h2>贡献你的知识</h2>
+            <div class="contribution-form">
+                <div>
+                    <label>知识标题：</label>
+                    <input type="text" placeholder="请输入知识主题">
+                </div>
+                <div>
+                    <label>知识内容：</label>
+                    <textarea rows="4" placeholder="请填写技术文档、实验数据或研究分析"></textarea>
+                </div>
+                <div>
+                    <label>所属领域：</label>
+                    <select>
+                        <option>人工智能</option>
+                        <option>生物医药</option>
+                        <option>材料科学</option>
+                    </select>
+                </div>
+                <button>提交审核</button>
+            </div>
+        </div>
+        <!-- 协作体系模块 -->
+        <div id="cooperate" class="section-block">
+            <h2>知识协作体系</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div>
                     <h3>标注规范</h3>
                     <ul>
@@ -233,114 +247,85 @@
                         <li>多模态知识融合</li>
                     </ol>
                 </div>
-                <div>
-                    <h3>数据接口</h3>
-                    <div class="api-preview">
-                        GET /v1/rag?text={prompt}&model=deepseek
-                    </div>
-                </div>
             </div>
-        </section>
-
-        <!-- 知识库导航 -->
-        <section class="knowledge-nav">
-            <div class="card">
-                <h3>知识分类</h3>
-                <ul>
-                    <li>科技文献</li>
-                    <li>行业报告</li>
-                    <li>技术文档</li>
-                    <li>领域术语</li>
-                </ul>
-            </div>
-            <div class="card">
-                <h3>热门标签</h3>
-                <div class="tag-cloud">
-                    <span class="tag">人工智能</span>
-                    <span class="tag">机器学习</span>
-                    <span class="tag">数据标注</span>
-                    <span class="tag">NLP</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 社区协作看板 -->
-        <section class="card">
-            <h2>实时协作看板</h2>
-            <div class="grid-3col">
+        </div>
+        <!-- 贡献榜单模块 -->
+        <div id="leaderboard" class="section-block">
+            <h2>贡献者榜单</h2>
+            <table style="width:100%; border-collapse: collapse; margin-top:1rem;">
+                <thead>
+                    <tr style="background: var(--light-bg);">
+                        <th style="padding:1rem;">排名</th>
+                        <th>贡献者</th>
+                        <th>有效贡献</th>
+                        <th>领域影响值</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid #eee;">
+                        <td style="padding:1rem;">1</td>
+                        <td>@AI_Researcher</td>
+                        <td>1,234篇</td>
+                        <td>人工智能 ★★★★</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #eee;">
+                        <td style="padding:1rem;">2</td>
+                        <td>@Bio_Tech</td>
+                        <td>890篇</td>
+                        <td>生物医药 ★★★☆</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- 用户成长体系模块 -->
+        <div id="dev" class="section-block">
+            <h2>用户成长体系</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div>
-                    <h4>最新标注</h4>
-                    <ul>
-                        <li>量子计算原理文档分块优化</li>
-                        <li>医疗知识图谱语义对齐</li>
-                        <li>金融术语标准化标注</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>活跃贡献者</h4>
+                    <h3>贡献等级</h3>
                     <ol>
-                        <li>张伟 (1200分)</li>
-                        <li>李芳 (980分)</li>
-                        <li>AI辅助系统 (750分)</li>
+                        <li>新手 → 专家 → 导师</li>
+                        <li>解锁高级标注工具</li>
+                        <li>获得模型训练优先权</li>
                     </ol>
                 </div>
                 <div>
-                    <h4>质量评估</h4>
-                    <p>标注准确率：98.7%</p>
-                    <p>审核通过率：96.2%</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- 开放生态 -->
-        <section class="card">
-            <h2>技术生态</h2>
-            <div class="grid-3col">
-                <div>
-                    <h3>模型支持</h3>
+                    <h3>积分体系</h3>
                     <ul>
-                        <li>DeepSeek</li>
-                        <li>LLaMA</li>
-                        <li>GPT-4</li>
+                        <li>标注审核通过 +50分</li>
+                        <li>优质标注被引用 +30分/次</li>
+                        <li>发现系统漏洞 +200分</li>
                     </ul>
                 </div>
+            </div>
+        </div>
+        <!-- 开发者入口模块 -->
+        <div id="dev" class="section-block">
+            <h2>开发者资源</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div>
-                    <h3>开发者资源</h3>
-                    <ul>
-                        <li>SDK下载中心</li>
-                        <li>API文档库</li>
-                        <li>调试沙盒环境</li>
-                    </ul>
+                    <h3>API接入文档</h3>
+                    <pre style="background: #f4f6f8; padding:1rem;">
+// 基础查询示例
+POST /v1/query
+{
+    "model": "deepseek-67b",
+    "query": "量子计算最新进展",
+    "domain": ["physics","computer"]
+}
+                    </pre>
                 </div>
                 <div>
-                    <h3>数据统计</h3>
-                    <p>日调用量：2.3M次</p>
-                    <p>响应速度：≤200ms</p>
+                    <h3>数据接入流程</h3>
+                    <ol style="line-height:2;">
+                        <li>注册开发者账号</li>
+                        <li>创建知识容器</li>
+                        <li>配置数据管道</li>
+                        <li>接入模型验证</li>
+                    </ol>
                 </div>
             </div>
-        </section>
-		<!-- 在现有结构中添加 -->
-<section class="card">
-    <h2>用户成长体系</h2>
-    <div class="grid-3col">
-        <div>
-            <h3>贡献等级</h3>
-            <ol>
-                <li>新手 → 专家 → 导师</li>
-                <li>解锁高级标注工具</li>
-                <li>获得模型训练优先权</li>
-            </ol>
         </div>
-        <div>
-            <h3>积分体系</h3>
-            <ul>
-                <li>标注审核通过 +50分</li>
-                <li>优质标注被引用 +30分/次</li>
-                <li>发现系统漏洞 +200分</li>
-            </ul>
-        </div>
-    </div>
-</section>
     </div>
 </body>
 </html>
