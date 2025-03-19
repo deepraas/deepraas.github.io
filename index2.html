@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>智枢开放知识平台 - DeepSeek生态中枢</title>
+    <style>
+        :root {
+            --primary-color: #2B6CB0; /* 知识蓝主色调 */
+            --secondary-color: #4299E1; 
+        }
+        body {font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;}
+        .container {max-width: 1280px; margin: 0 auto;}
+        
+        /* 核心功能导航栏 */
+        .nav-bar {
+            display: grid;
+            grid-template-columns: auto 120px 120px 120px 200px;
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+        }
+        .logo {font-size: 1.5rem; font-weight: bold;}
+        
+        /* 知识图谱可视化区域 */
+        #knowledge-graph {
+            height: 400px;
+            background: #EBF8FF;
+            border-radius: 8px;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        /* RAG优化工作台 */
+        .rag-dashboard {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 1rem;
+        }
+        .metrics-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-bar container">
+        <div class="logo">智枢AI</div>
+        <a href="#explore">探索知识库</a>
+        <a href="#contribute">贡献知识</a>
+        <a href="#leaderboard">贡献榜</a>
+        <a href="#dev-portal" class="dev-portal">开发者入口</a>
+    </div>
+
+    <div class="container">
+        <!-- 知识协作核心模块 -->
+        <div class="rag-dashboard">
+            <div class="metrics-card">
+                <h3>RAG优化实时看板（当前模型：DeepSeek-67B）</h3>
+                <div class="metrics-grid">
+                    <div>知识召回准确率 ▲12% </div>
+                    <div>问题分类准确率 94.7% </div>
+                    <div>响应延迟 <300ms </div>
+                </div>
+                <div id="accuracy-trend"></div>
+            </div>
+            
+            <div class="metrics-card">
+                <h4>今日社区贡献</h4>
+                <ul>
+                    <li>新增知识节点 1,234个</li>
+                    <li>模型微调建议 89条 </li>
+                    <li>标注任务完成 562项</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 知识库协作界面 -->
+        <div class="knowledge-editor">
+            <div class="doc-structure">
+                <h4>《新能源汽车电池技术白皮书》协作版 </h4>
+                <div class="version-control">
+                    <span>当前版本：v2.1.3（由 @工程师小李 于2小时前更新）</span>
+                    <button>对比版本差异</button>
+                </div>
+                <div class="contribution-stats">
+                    <span>参与贡献者：清华电池实验室、宁德时代技术组等12个团队</span>
+                </div>
+            </div>
+            <div class="editor-actions">
+                <button>提交知识补充</button>
+                <button>发起模型优化提案</button>
+            </div>
+        </div>
+
+        <!-- 开放API集成示例 -->
+        <div class="api-integration">
+            <h3>企业级接入示例（京东云AI助理） </h3>
+            <pre><code>
+POST /v1/rag_query
+{
+    "model": "deepseek-67b-enhanced",
+    "query": "磷酸铁锂电池低温性能优化方案",
+    "knowledge_sources": ["新能源汽车", "材料科学"]
+}
+            </code></pre>
+            <div class="api-response">
+                <p>响应包含：技术方案摘要、相关专利链接、领域专家推荐</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 三维知识图谱可视化容器 -->
+    <script src="https://cdn.jsdelivr.net/npm/@antv/g6"></script>
+    <script>
+        // 初始化知识图谱可视化
+        const graph = new G6.Graph({
+            container: 'knowledge-graph',
+            modes: { default: ['drag-canvas'] },
+            layout: { type: 'force', preventOverlap: true }
+        });
+        
+        // 动态加载领域知识节点（示例数据）
+        fetch('/api/knowledge_nodes?domain=AI')
+            .then(res => res.json())
+            .then(data => graph.data(data).render());
+    </script>
+</body>
+</html>
