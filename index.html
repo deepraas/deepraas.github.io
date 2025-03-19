@@ -1,193 +1,346 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" >
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>OpenRAG Hub - 开放知识协作平台</title>
+   <style>
+   /* 可添加的进阶效果 */
+.card:hover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, 
+        rgba(255,255,255,0.1) 0%,
+        rgba(255,255,255,0.3) 100%);
+    pointer-events: none;
+}
 
-<title>元知</title>
+@keyframes glow {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+}
 
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+.stats-item p:first-child {
+    animation: glow 2s ease-in-out infinite;
+}
+        :root {
+            --primary: #2c3e50;
+            --secondary: #2980b9;
+            --accent: #3498db;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --gradient: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+        }
 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://deepraas.github.io/favicon.ico?v=1742293064099">
-<link rel="stylesheet" href="https://deepraas.github.io/styles/main.css">
+        body {
+            font-family: 'Segoe UI', system-ui;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background: #f9fbfd;
+        }
 
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
 
+        /* 增强卡片设计 */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
-<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
 
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
 
+        /* 网格布局优化 */
+        .grid-3col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
 
-    <meta name="description" content="元知原味">
-    
-  </head>
-  <body>
-    <div id="app" class="main">
+        /* 知识导航增强 */
+        .knowledge-nav .card {
+            min-height: 200px;
+        }
 
-      <div class="sidebar" :class="{ 'full-height': menuVisible }">
-  <div class="top-container" data-aos="fade-right">
-    <div class="top-header-container">
-      <a class="site-title-container" href="https://deepraas.github.io">
-        <img src="https://deepraas.github.io/images/avatar.png?v=1742293064099" class="site-logo">
-        <h1 class="site-title">元知</h1>
-      </a>
-      <div class="menu-btn" @click="menuVisible = !menuVisible">
-        <div class="line"></div>
-      </div>
-    </div>
-    <div>
-      
-        
-          <a href="/" class="site-nav">
-            首页
-          </a>
-        
-      
-        
-          <a href="/archives" class="site-nav">
-            归档
-          </a>
-        
-      
-        
-          <a href="/tags" class="site-nav">
-            标签
-          </a>
-        
-      
-        
-          <a href="/post/about" class="site-nav">
-            关于
-          </a>
-        
-      
-    </div>
-  </div>
-  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
-    <div class="social-container">
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    </div>
-    <div class="site-description">
-      元知原味
-    </div>
-    <div class="site-footer">
-      Powered by <a href="https://deepraas.github.io/" target="_blank">DeepRaas</a> | <a class="rss" href="https://deepraas.github.io/atom.xml" target="_blank">RSS</a>
-    </div>
-  </div>
-</div>
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
 
+        .tag {
+            background: var(--light-bg);
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
 
-      <div class="main-container">
-        <div class="content-container" data-aos="fade-up">
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://deepraas.github.io/post/ai-agent-wei-lai-fa-zhan-qu-shi-hui-chu-zhi-wen-jian/">
-                  <h2 class="post-title">AI Agent 未来发展趋势  匯出至文件</h2>
-                </a>
-                <div class="post-date">
-                  2025-03-18
+        .tag:hover {
+            background: var(--accent);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* API预览样式增强 */
+        .api-preview {
+            background: #f4f8fb;
+            padding: 1.2rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            border: 1px solid #e0e0e0;
+            color: #2c3e50;
+            position: relative;
+        }
+
+        .api-preview::before {
+            content: 'API';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: var(--gradient);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* 数据统计样式 */
+        .stats-item {
+            padding: 1rem;
+            background: var(--light-bg);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stats-item p:first-child {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 标题样式增强 */
+        h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 80%;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* 列表样式优化 */
+        ul, ol {
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin: 0.8rem 0;
+            padding-left: 0.5rem;
+            position: relative;
+        }
+
+        li::before {
+            content: '•';
+            position: absolute;
+            left: -1rem;
+            color: var(--accent);
+        }
+
+        /* 知识分类增强 */
+        .knowledge-nav ul li {
+            padding: 0.8rem 1rem;
+            margin: 0.5rem 0;
+            background: var(--light-bg);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .knowledge-nav ul li:hover {
+            border-left-color: var(--accent);
+            transform: translateX(5px);
+            background: white;
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .knowledge-nav {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-3col {
+                grid-template-columns: 1fr;
+            }
+        }
+</style>
+</head>
+<body>
+    <div class="container">
+        <!-- 知识协作体系 -->
+        <section class="card">
+            <h2>知识协作体系</h2>
+            <div class="grid-3col">
+                <div>
+                    <h3>标注规范</h3>
+                    <ul>
+                        <li>多维度语义标注模板</li>
+                        <li>AI辅助校验系统</li>
+                        <li>版本控制管理</li>
+                    </ul>
                 </div>
-                <div class="post-abstract">
-                  
+                <div>
+                    <h3>协作流程</h3>
+                    <ol>
+                        <li>文档分块 → 语义标注 → 质量审核</li>
+                        <li>动态上下文注入</li>
+                        <li>多模态知识融合</li>
+                    </ol>
                 </div>
-              </div>
-              
-                <a class="right" href="https://deepraas.github.io/post/ai-agent-wei-lai-fa-zhan-qu-shi-hui-chu-zhi-wen-jian/">
-                  <div class="feature-container" style="background-image: url('https://deepraas.github.io/post-images/ai-agent-wei-lai-fa-zhan-qu-shi-hui-chu-zhi-wen-jian.jpg')">
-                  </div>
-                </a>
-              
-            </article>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://deepraas.github.io/post/deepseek-shang-gang/">
-                  <h2 class="post-title">DeepSeek们要持证上岗了？</h2>
-                </a>
-                <div class="post-date">
-                  2025-03-18
+                <div>
+                    <h3>数据接口</h3>
+                    <div class="api-preview">
+                        GET /v1/rag?text={prompt}&model=deepseek
+                    </div>
                 </div>
-                <div class="post-abstract">
-                  
-                </div>
-              </div>
-              
-            </article>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://deepraas.github.io/post/about/">
-                  <h2 class="post-title">关于元知</h2>
-                </a>
-                <div class="post-date">
-                  2019-01-25
-                </div>
-                <div class="post-abstract">
-                  
-                </div>
-              </div>
-              
-            </article>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://deepraas.github.io/post/hello-gridea/">
-                  <h2 class="post-title">元知RAAS</h2>
-                </a>
-                <div class="post-date">
-                  2018-12-12
-                </div>
-                <div class="post-abstract">
-                  
-                </div>
-              </div>
-              
-                <a class="right" href="https://deepraas.github.io/post/hello-gridea/">
-                  <div class="feature-container" style="background-image: url('https://deepraas.github.io/post-images/hello-gridea.png')">
-                  </div>
-                </a>
-              
-            </article>
-          
+            </div>
+        </section>
 
-          <div class="pagination-container">
-  
-  
-</div>
+        <!-- 知识库导航 -->
+        <section class="knowledge-nav">
+            <div class="card">
+                <h3>知识分类</h3>
+                <ul>
+                    <li>科技文献</li>
+                    <li>行业报告</li>
+                    <li>技术文档</li>
+                    <li>领域术语</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>热门标签</h3>
+                <div class="tag-cloud">
+                    <span class="tag">人工智能</span>
+                    <span class="tag">机器学习</span>
+                    <span class="tag">数据标注</span>
+                    <span class="tag">NLP</span>
+                </div>
+            </div>
+        </section>
 
+        <!-- 社区协作看板 -->
+        <section class="card">
+            <h2>实时协作看板</h2>
+            <div class="grid-3col">
+                <div>
+                    <h4>最新标注</h4>
+                    <ul>
+                        <li>量子计算原理文档分块优化</li>
+                        <li>医疗知识图谱语义对齐</li>
+                        <li>金融术语标准化标注</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>活跃贡献者</h4>
+                    <ol>
+                        <li>张伟 (1200分)</li>
+                        <li>李芳 (980分)</li>
+                        <li>AI辅助系统 (750分)</li>
+                    </ol>
+                </div>
+                <div>
+                    <h4>质量评估</h4>
+                    <p>标注准确率：98.7%</p>
+                    <p>审核通过率：96.2%</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 开放生态 -->
+        <section class="card">
+            <h2>技术生态</h2>
+            <div class="grid-3col">
+                <div>
+                    <h3>模型支持</h3>
+                    <ul>
+                        <li>DeepSeek</li>
+                        <li>LLaMA</li>
+                        <li>GPT-4</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>开发者资源</h3>
+                    <ul>
+                        <li>SDK下载中心</li>
+                        <li>API文档库</li>
+                        <li>调试沙盒环境</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>数据统计</h3>
+                    <p>日调用量：2.3M次</p>
+                    <p>响应速度：≤200ms</p>
+                </div>
+            </div>
+        </section>
+		<!-- 在现有结构中添加 -->
+<section class="card">
+    <h2>用户成长体系</h2>
+    <div class="grid-3col">
+        <div>
+            <h3>贡献等级</h3>
+            <ol>
+                <li>新手 → 专家 → 导师</li>
+                <li>解锁高级标注工具</li>
+                <li>获得模型训练优先权</li>
+            </ol>
         </div>
-      </div>
+        <div>
+            <h3>积分体系</h3>
+            <ul>
+                <li>标注审核通过 +50分</li>
+                <li>优质标注被引用 +30分/次</li>
+                <li>发现系统漏洞 +200分</li>
+            </ul>
+        </div>
     </div>
-
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-<script type="application/javascript">
-
-AOS.init();
-
-var app = new Vue({
-  el: '#app',
-  data: {
-    menuVisible: false,
-  },
-})
-
-</script>
-
-
-
-
-
-
-  </body>
+</section>
+    </div>
+</body>
 </html>
