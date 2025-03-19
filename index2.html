@@ -5,126 +5,196 @@
     <title>智枢开放知识平台 - DeepSeek生态中枢</title>
     <style>
         :root {
-            --primary-color: #2B6CB0; /* 知识蓝主色调 */
-            --secondary-color: #4299E1; 
+            --primary-blue: #2B6CB0;
+            --light-bg: #F7FAFC;
         }
-        body {font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;}
-        .container {max-width: 1280px; margin: 0 auto;}
+        body {
+            font-family: -apple-system, system-ui, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
         
-        /* 核心功能导航栏 */
+        /* 修复导航栏功能 */
         .nav-bar {
-            display: grid;
-            grid-template-columns: auto 120px 120px 120px 200px;
-            background: var(--primary-color);
+            background: var(--primary-blue);
+            padding: 1rem;
+            display: flex;
+            gap: 2rem;
+        }
+        .nav-bar a {
             color: white;
-            padding: 1rem;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
         }
-        .logo {font-size: 1.5rem; font-weight: bold;}
-        
-        /* 知识图谱可视化区域 */
-        #knowledge-graph {
-            height: 400px;
-            background: #EBF8FF;
-            border-radius: 8px;
-            margin: 1rem 0;
-            position: relative;
+        .nav-bar a:hover {
+            background: rgba(255,255,255,0.1);
         }
-        
-        /* RAG优化工作台 */
-        .rag-dashboard {
-            display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 1rem;
-        }
-        .metrics-card {
+
+        /* 核心模块容器 */
+        .section-block {
             background: white;
-            padding: 1rem;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            padding: 1.5rem;
+        }
+
+        /* 知识图谱占位图 */
+        .graph-placeholder {
+            height: 400px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        /* 贡献表单样式 */
+        .contribution-form {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        input, textarea {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div class="nav-bar container">
-        <div class="logo">智枢AI</div>
+    <nav class="nav-bar">
+        <div style="color:white;font-weight: bold;">智枢AI</div>
         <a href="#explore">探索知识库</a>
         <a href="#contribute">贡献知识</a>
         <a href="#leaderboard">贡献榜</a>
-        <a href="#dev-portal" class="dev-portal">开发者入口</a>
-    </div>
+        <a href="#dev">开发者入口</a>
+    </nav>
 
     <div class="container">
-        <!-- 知识协作核心模块 -->
-        <div class="rag-dashboard">
-            <div class="metrics-card">
-                <h3>RAG优化实时看板（当前模型：DeepSeek-67B）</h3>
-                <div class="metrics-grid">
-                    <div>知识召回准确率 ▲12% </div>
-                    <div>问题分类准确率 94.7% </div>
-                    <div>响应延迟 <300ms </div>
-                </div>
-                <div id="accuracy-trend"></div>
+        <!-- 探索知识库模块 -->
+        <div id="explore" class="section-block">
+            <h2>探索知识领域</h2>
+            <div class="graph-placeholder">
+                [知识图谱可视化：节点表示技术概念，连线表示逻辑关系]
             </div>
-            
-            <div class="metrics-card">
-                <h4>今日社区贡献</h4>
-                <ul>
-                    <li>新增知识节点 1,234个</li>
-                    <li>模型微调建议 89条 </li>
-                    <li>标注任务完成 562项</li>
-                </ul>
+            <div style="margin-top:1rem;">
+                <h3>热门知识库</h3>
+                <div style="display: grid; grid-template-columns: repeat(3,1fr); gap:1rem;">
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>人工智能</h4>
+                        <p>包含12,450篇论文解析</p>
+                        <small>最后更新：2小时前</small>
+                    </div>
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>生物医药</h4>
+                        <p>8,230份临床试验报告</p>
+                        <small>最后更新：5小时前</small>
+                    </div>
+                    <div style="padding:1rem; border:1px solid #eee;">
+                        <h4>新能源材料</h4>
+                        <p>6,780项专利分析</p>
+                        <small>最后更新：1天前</small>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- 知识库协作界面 -->
-        <div class="knowledge-editor">
-            <div class="doc-structure">
-                <h4>《新能源汽车电池技术白皮书》协作版 </h4>
-                <div class="version-control">
-                    <span>当前版本：v2.1.3（由 @工程师小李 于2小时前更新）</span>
-                    <button>对比版本差异</button>
+        <!-- 贡献知识模块 -->
+        <div id="contribute" class="section-block">
+            <h2>贡献你的知识</h2>
+            <div class="contribution-form">
+                <div>
+                    <label>知识标题：</label>
+                    <input type="text" placeholder="请输入知识主题">
                 </div>
-                <div class="contribution-stats">
-                    <span>参与贡献者：清华电池实验室、宁德时代技术组等12个团队</span>
+                <div>
+                    <label>知识内容：</label>
+                    <textarea rows="4" placeholder="请填写技术文档、实验数据或研究分析"></textarea>
                 </div>
-            </div>
-            <div class="editor-actions">
-                <button>提交知识补充</button>
-                <button>发起模型优化提案</button>
+                <div>
+                    <label>所属领域：</label>
+                    <select>
+                        <option>人工智能</option>
+                        <option>生物医药</option>
+                        <option>材料科学</option>
+                    </select>
+                </div>
+                <button>提交审核</button>
             </div>
         </div>
 
-        <!-- 开放API集成示例 -->
-        <div class="api-integration">
-            <h3>企业级接入示例（京东云AI助理） </h3>
-            <pre><code>
-POST /v1/rag_query
+        <!-- 贡献榜单模块 -->
+        <div id="leaderboard" class="section-block">
+            <h2>贡献者榜单</h2>
+            <table style="width:100%; border-collapse: collapse; margin-top:1rem;">
+                <thead>
+                    <tr style="background: var(--light-bg);">
+                        <th style="padding:1rem;">排名</th>
+                        <th>贡献者</th>
+                        <th>有效贡献</th>
+                        <th>领域影响值</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid #eee;">
+                        <td style="padding:1rem;">1</td>
+                        <td>@AI_Researcher</td>
+                        <td>1,234篇</td>
+                        <td>人工智能 ★★★★</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #eee;">
+                        <td style="padding:1rem;">2</td>
+                        <td>@Bio_Tech</td>
+                        <td>890篇</td>
+                        <td>生物医药 ★★★☆</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 开发者入口模块 -->
+        <div id="dev" class="section-block">
+            <h2>开发者资源</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <h3>API接入文档</h3>
+                    <pre style="background: #f4f6f8; padding:1rem;">
+// 基础查询示例
+POST /v1/query
 {
-    "model": "deepseek-67b-enhanced",
-    "query": "磷酸铁锂电池低温性能优化方案",
-    "knowledge_sources": ["新能源汽车", "材料科学"]
+    "model": "deepseek-67b",
+    "query": "量子计算最新进展",
+    "domain": ["physics","computer"]
 }
-            </code></pre>
-            <div class="api-response">
-                <p>响应包含：技术方案摘要、相关专利链接、领域专家推荐</p>
+                    </pre>
+                </div>
+                <div>
+                    <h3>数据接入流程</h3>
+                    <ol style="line-height:2;">
+                        <li>注册开发者账号</li>
+                        <li>创建知识容器</li>
+                        <li>配置数据管道</li>
+                        <li>接入模型验证</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- 三维知识图谱可视化容器 -->
-    <script src="https://cdn.jsdelivr.net/npm/@antv/g6"></script>
-    <script>
-        // 初始化知识图谱可视化
-        const graph = new G6.Graph({
-            container: 'knowledge-graph',
-            modes: { default: ['drag-canvas'] },
-            layout: { type: 'force', preventOverlap: true }
-        });
-        
-        // 动态加载领域知识节点（示例数据）
-        fetch('/api/knowledge_nodes?domain=AI')
-            .then(res => res.json())
-            .then(data => graph.data(data).render());
-    </script>
 </body>
 </html>
