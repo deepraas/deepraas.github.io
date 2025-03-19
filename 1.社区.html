@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>OpenRAG Hub - 开放知识协作平台</title>
+   <style>
+   /* 可添加的进阶效果 */
+.card:hover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, 
+        rgba(255,255,255,0.1) 0%,
+        rgba(255,255,255,0.3) 100%);
+    pointer-events: none;
+}
+
+@keyframes glow {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+}
+
+.stats-item p:first-child {
+    animation: glow 2s ease-in-out infinite;
+}
+        :root {
+            --primary: #2c3e50;
+            --secondary: #2980b9;
+            --accent: #3498db;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --gradient: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background: #f9fbfd;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* 增强卡片设计 */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        /* 网格布局优化 */
+        .grid-3col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* 知识导航增强 */
+        .knowledge-nav .card {
+            min-height: 200px;
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .tag {
+            background: var(--light-bg);
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+
+        .tag:hover {
+            background: var(--accent);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* API预览样式增强 */
+        .api-preview {
+            background: #f4f8fb;
+            padding: 1.2rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            border: 1px solid #e0e0e0;
+            color: #2c3e50;
+            position: relative;
+        }
+
+        .api-preview::before {
+            content: 'API';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: var(--gradient);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* 数据统计样式 */
+        .stats-item {
+            padding: 1rem;
+            background: var(--light-bg);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stats-item p:first-child {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 标题样式增强 */
+        h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 80%;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* 列表样式优化 */
+        ul, ol {
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin: 0.8rem 0;
+            padding-left: 0.5rem;
+            position: relative;
+        }
+
+        li::before {
+            content: '•';
+            position: absolute;
+            left: -1rem;
+            color: var(--accent);
+        }
+
+        /* 知识分类增强 */
+        .knowledge-nav ul li {
+            padding: 0.8rem 1rem;
+            margin: 0.5rem 0;
+            background: var(--light-bg);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .knowledge-nav ul li:hover {
+            border-left-color: var(--accent);
+            transform: translateX(5px);
+            background: white;
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .knowledge-nav {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-3col {
+                grid-template-columns: 1fr;
+            }
+        }
+</style>
+</head>
+<body>
+    <div class="container">
+        <!-- 知识协作体系 -->
+        <section class="card">
+            <h2>知识协作体系</h2>
+            <div class="grid-3col">
+                <div>
+                    <h3>标注规范</h3>
+                    <ul>
+                        <li>多维度语义标注模板</li>
+                        <li>AI辅助校验系统</li>
+                        <li>版本控制管理</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>协作流程</h3>
+                    <ol>
+                        <li>文档分块 → 语义标注 → 质量审核</li>
+                        <li>动态上下文注入</li>
+                        <li>多模态知识融合</li>
+                    </ol>
+                </div>
+                <div>
+                    <h3>数据接口</h3>
+                    <div class="api-preview">
+                        GET /v1/rag?text={prompt}&model=deepseek
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 知识库导航 -->
+        <section class="knowledge-nav">
+            <div class="card">
+                <h3>知识分类</h3>
+                <ul>
+                    <li>科技文献</li>
+                    <li>行业报告</li>
+                    <li>技术文档</li>
+                    <li>领域术语</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>热门标签</h3>
+                <div class="tag-cloud">
+                    <span class="tag">人工智能</span>
+                    <span class="tag">机器学习</span>
+                    <span class="tag">数据标注</span>
+                    <span class="tag">NLP</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 社区协作看板 -->
+        <section class="card">
+            <h2>实时协作看板</h2>
+            <div class="grid-3col">
+                <div>
+                    <h4>最新标注</h4>
+                    <ul>
+                        <li>量子计算原理文档分块优化</li>
+                        <li>医疗知识图谱语义对齐</li>
+                        <li>金融术语标准化标注</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>活跃贡献者</h4>
+                    <ol>
+                        <li>张伟 (1200分)</li>
+                        <li>李芳 (980分)</li>
+                        <li>AI辅助系统 (750分)</li>
+                    </ol>
+                </div>
+                <div>
+                    <h4>质量评估</h4>
+                    <p>标注准确率：98.7%</p>
+                    <p>审核通过率：96.2%</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 开放生态 -->
+        <section class="card">
+            <h2>技术生态</h2>
+            <div class="grid-3col">
+                <div>
+                    <h3>模型支持</h3>
+                    <ul>
+                        <li>DeepSeek</li>
+                        <li>LLaMA</li>
+                        <li>GPT-4</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>开发者资源</h3>
+                    <ul>
+                        <li>SDK下载中心</li>
+                        <li>API文档库</li>
+                        <li>调试沙盒环境</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>数据统计</h3>
+                    <p>日调用量：2.3M次</p>
+                    <p>响应速度：≤200ms</p>
+                </div>
+            </div>
+        </section>
+		<!-- 在现有结构中添加 -->
+<section class="card">
+    <h2>用户成长体系</h2>
+    <div class="grid-3col">
+        <div>
+            <h3>贡献等级</h3>
+            <ol>
+                <li>新手 → 专家 → 导师</li>
+                <li>解锁高级标注工具</li>
+                <li>获得模型训练优先权</li>
+            </ol>
+        </div>
+        <div>
+            <h3>积分体系</h3>
+            <ul>
+                <li>标注审核通过 +50分</li>
+                <li>优质标注被引用 +30分/次</li>
+                <li>发现系统漏洞 +200分</li>
+            </ul>
+        </div>
+    </div>
+</section>
+    </div>
+</body>
+</html>
