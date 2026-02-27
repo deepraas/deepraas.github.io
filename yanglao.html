@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>养老教育财务规划计算器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans SC', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .input-group { transition: all 0.2s; }
+        .input-group:focus-within { transform: scale(1.01); }
+        .result-card { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
+        .highlight-number { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Custom range slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 2px;
+        }
+        
+        .tab-active { border-bottom: 3px solid #667eea; color: #667eea; font-weight: 600; }
+        .tab-inactive { border-bottom: 3px solid transparent; color: #6b7280; }
+        .tab-inactive:hover { color: #374151; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Header -->
+    <div class="gradient-bg text-white py-8 px-4 shadow-lg">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">💰 养老教育财务规划计算器</h1>
+            <p class="text-blue-100 text-lg">全面规划您的退休生活与子女教育资金，考虑通胀影响，精准计算社保策略</p>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        
+        <!-- Navigation Tabs -->
+        <div class="flex space-x-8 border-b border-gray-200 mb-8 overflow-x-auto">
+            <button onclick="switchTab('basic')" id="tab-basic" class="tab-active pb-4 px-2 whitespace-nowrap transition-colors">基础信息</button>
+            <button onclick="switchTab('pension')" id="tab-pension" class="tab-inactive pb-4 px-2 whitespace-nowrap transition-colors">社保养老金计算</button>
+            <button onclick="switchTab('education')" id="tab-education" class="tab-inactive pb-4 px-2 whitespace-nowrap transition-colors">教育金规划</button>
+            <button onclick="switchTab('retirement')" id="tab-retirement" class="tab-inactive pb-4 px-2 whitespace-nowrap transition-colors">养老金缺口</button>
+            <button onclick="switchTab('summary')" id="tab-summary" class="tab-inactive pb-4 px-2 whitespace-nowrap transition-colors">综合报告</button>
+        </div>
+
+        <!-- Basic Info Tab -->
+        <div id="content-basic" class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Personal Info -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-100 text-blue-600 p-2 rounded-lg mr-3">👤</span>
+                        个人信息
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">当前年龄</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="range" id="currentAge" min="20" max="60" value="30" class="flex-1" oninput="updateValue('currentAge', 'currentAgeVal')">
+                                <span class="w-16 text-right font-bold text-blue-600"><span id="currentAgeVal">30</span>岁</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">预计退休年龄</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="range" id="retireAge" min="50" max="70" value="60" class="flex-1" oninput="updateValue('retireAge', 'retireAgeVal')">
+                                <span class="w-16 text-right font-bold text-blue-600"><span id="retireAgeVal">60</span>岁</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">预期寿命</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="range" id="lifeExpectancy" min="70" max="100" value="85" class="flex-1" oninput="updateValue('lifeExpectancy', 'lifeExpectancyVal')">
+                                <span class="w-16 text-right font-bold text-blue-600"><span id="lifeExpectancyVal">85</span>岁</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family Info -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-green-100 text-green-600 p-2 rounded-lg mr-3">👨‍👩‍👧‍👦</span>
+                        家庭状况
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">子女数量</label>
+                            <select id="childrenCount" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="toggleChildrenInputs()">
+                                <option value="0">0个</option>
+                                <option value="1" selected>1个</option>
+                                <option value="2">2个</option>
+                                <option value="3">3个及以上</option>
+                            </select>
+                        </div>
+                        <div id="child1Age" class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">第一个孩子当前年龄</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="range" id="childAge1" min="0" max="22" value="5" class="flex-1" oninput="updateValue('childAge1', 'childAge1Val')">
+                                <span class="w-16 text-right font-bold text-green-600"><span id="childAge1Val">5</span>岁</span>
+                            </div>
+                        </div>
+                        <div id="child2Age" class="input-group hidden">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">第二个孩子当前年龄</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="range" id="childAge2" min="0" max="22" value="3" class="flex-1" oninput="updateValue('childAge2', 'childAge2Val')">
+                                <span class="w-16 text-right font-bold text-green-600"><span id="childAge2Val">3</span>岁</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Economic Assumptions -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover md:col-span-2">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-purple-100 text-purple-600 p-2 rounded-lg mr-3">📊</span>
+                        经济假设
+                    </h2>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">年通胀率 (%)</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="range" id="inflationRate" min="0" max="10" step="0.5" value="3" class="flex-1" oninput="updateValue('inflationRate', 'inflationRateVal')">
+                                <span class="w-20 text-right font-bold text-purple-600"><span id="inflationRateVal">3</span>%</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">建议：2-4%（中国近年CPI均值约2-3%）</p>
+                        </div>
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">投资收益率 (%)</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="range" id="investReturn" min="0" max="15" step="0.5" value="5" class="flex-1" oninput="updateValue('investReturn', 'investReturnVal')">
+                                <span class="w-20 text-right font-bold text-purple-600"><span id="investReturnVal">5</span>%</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">建议：保守3-4%，稳健5-6%，激进7%+</p>
+                        </div>
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">当前已有储蓄 (万元)</label>
+                            <input type="number" id="currentSavings" value="20" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" onchange="calculateAll()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pension Tab -->
+        <div id="content-pension" class="space-y-6 hidden">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Social Insurance Config -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-red-100 text-red-600 p-2 rounded-lg mr-3">🏛️</span>
+                        社保缴纳策略
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">参保地区平均工资 (元/月)</label>
+                            <input type="number" id="avgSalary" value="8000" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500" onchange="calculatePension()">
+                            <p class="text-xs text-gray-500 mt-1">当地社会平均工资，影响缴费基数上下限</p>
+                        </div>
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">缴费档次 (%)</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="range" id="pensionLevel" min="60" max="300" step="10" value="100" class="flex-1" oninput="updateValue('pensionLevel', 'pensionLevelVal'); calculatePension()">
+                                <span class="w-20 text-right font-bold text-red-600"><span id="pensionLevelVal">100</span>%</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">60%-300%，按平均工资的百分比缴纳</p>
+                        </div>
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">已缴费年限</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="range" id="paidYears" min="0" max="40" value="5" class="flex-1" oninput="updateValue('paidYears', 'paidYearsVal'); calculatePension()">
+                                <span class="w-16 text-right font-bold text-red-600"><span id="paidYearsVal">5</span>年</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">计划继续缴费年限</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="range" id="futureYears" min="0" max="35" value="20" class="flex-1" oninput="updateValue('futureYears', 'futureYearsVal'); calculatePension()">
+                                <span class="w-16 text-right font-bold text-red-600"><span id="futureYearsVal">20</span>年</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pension Result -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-yellow-100 text-yellow-600 p-2 rounded-lg mr-3">💵</span>
+                        养老金预估
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="result-card rounded-lg p-4">
+                            <p class="text-sm text-gray-600 mb-1">退休时首月养老金</p>
+                            <p class="text-3xl font-bold highlight-number">¥<span id="monthlyPension">0</span></p>
+                            <p class="text-xs text-gray-500 mt-1">考虑通胀后的实际购买力</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs text-gray-600">个人账户养老金</p>
+                                <p class="text-lg font-bold text-gray-800">¥<span id="personalPension">0</span></p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs text-gray-600">基础养老金</p>
+                                <p class="text-lg font-bold text-gray-800">¥<span id="basicPension">0</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-4 mt-4">
+                            <h3 class="font-semibold text-blue-800 mb-2">缴费分析</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">月缴费金额：</span>
+                                    <span class="font-bold">¥<span id="monthlyPay">0</span></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">总缴费年限：</span>
+                                    <span class="font-bold"><span id="totalYears">0</span>年</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">预计回本时间：</span>
+                                    <span class="font-bold text-green-600"><span id="paybackYears">0</span>年</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pension Strategy Advice -->
+            <div class="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl shadow-md p-6 border border-red-100">
+                <h3 class="text-lg font-bold text-red-800 mb-3">💡 社保缴费策略建议</h3>
+                <div id="pensionAdvice" class="space-y-2 text-sm text-gray-700">
+                    正在计算最优策略...
+                </div>
+            </div>
+        </div>
+
+        <!-- Education Tab -->
+        <div id="content-education" class="space-y-6 hidden">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Education Cost Settings -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-green-100 text-green-600 p-2 rounded-lg mr-3">🎓</span>
+                        教育金需求
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">当前年教育支出 (万元/年/孩)</label>
+                            <input type="number" id="currentEduCost" value="3" step="0.5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" onchange="calculateEducation()">
+                            <p class="text-xs text-gray-500">包括学费、兴趣班、生活费等</p>
+                        </div>
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">大学年费用预估 (万元/年)</label>
+                            <input type="number" id="collegeCost" value="4" step="0.5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" onchange="calculateEducation()">
+                            <p class="text-xs text-gray-500">含学费、住宿费、生活费，考虑通胀后的未来值</p>
+                        </div>
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">是否考虑留学</label>
+                            <select id="studyAbroad" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" onchange="calculateEducation()">
+                                <option value="0">否</option>
+                                <option value="1">是（本科阶段）</option>
+                                <option value="2">是（研究生阶段）</option>
+                            </select>
+                        </div>
+                        <div id="abroadCostDiv" class="input-group hidden">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">留学年费用 (万元/年)</label>
+                            <input type="number" id="abroadCost" value="30" step="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" onchange="calculateEducation()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Education Result -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3">📚</span>
+                        教育金总需求
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="result-card rounded-lg p-4">
+                            <p class="text-sm text-gray-600 mb-1">教育金总现值 (考虑通胀)</p>
+                            <p class="text-3xl font-bold highlight-number">¥<span id="totalEduCost">0</span>万</p>
+                            <p class="text-xs text-gray-500 mt-1">从现在到孩子大学毕业所需全部资金</p>
+                        </div>
+                        
+                        <div class="space-y-3" id="eduBreakdown">
+                            <!-- Dynamic content -->
+                        </div>
+
+                        <div class="bg-green-50 rounded-lg p-4 mt-4">
+                            <h3 class="font-semibold text-green-800 mb-2">资金准备建议</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">每月需定投：</span>
+                                    <span class="font-bold text-green-700">¥<span id="monthlyEduSave">0</span></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">年化收益率按：</span>
+                                    <span class="font-bold"><span id="eduReturnRate">5</span>%计算</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education Timeline Chart -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">教育支出时间线</h3>
+                <canvas id="eduChart" height="100"></canvas>
+            </div>
+        </div>
+
+        <!-- Retirement Gap Tab -->
+        <div id="content-retirement" class="space-y-6 hidden">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Retirement Living Cost -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-purple-100 text-purple-600 p-2 rounded-lg mr-3">🏖️</span>
+                        退休生活需求
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">当前月生活费 (元)</label>
+                            <input type="number" id="currentLivingCost" value="8000" step="500" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" onchange="calculateRetirement()">
+                        </div>
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">退休后生活质量</label>
+                            <select id="retireQuality" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" onchange="calculateRetirement()">
+                                <option value="0.7">简朴（当前70%）</option>
+                                <option value="0.8" selected>舒适（当前80%）</option>
+                                <option value="1.0">维持现状（100%）</option>
+                                <option value="1.2">品质生活（当前120%）</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">预计医疗备用金 (万元)</label>
+                            <input type="number" id="medicalReserve" value="30" step="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" onchange="calculateRetirement()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Retirement Calculation -->
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-orange-100 text-orange-600 p-2 rounded-lg mr-3">🎯</span>
+                        养老金缺口分析
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="result-card rounded-lg p-4 border-l-4 border-orange-500">
+                            <p class="text-sm text-gray-600 mb-1">退休时养老金总缺口</p>
+                            <p class="text-3xl font-bold text-orange-600">¥<span id="retirementGap">0</span>万</p>
+                            <p class="text-xs text-gray-500 mt-1">除社保外需自行储备的资金</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs text-gray-600">退休时总需求</p>
+                                <p class="text-lg font-bold text-gray-800">¥<span id="totalRetireNeed">0</span>万</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs text-gray-600">社保可覆盖</p>
+                                <p class="text-lg font-bold text-gray-800">¥<span id="pensionCover">0</span>万</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-purple-50 rounded-lg p-4">
+                            <h3 class="font-semibold text-purple-800 mb-2">补充养老储备方案</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">每月需额外储蓄：</span>
+                                    <span class="font-bold text-purple-700">¥<span id="monthlyRetireSave">0</span></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">占当前收入比例：</span>
+                                    <span class="font-bold" id="saveRatio">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Retirement Cash Flow Chart -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">退休后现金流预测</h3>
+                <canvas id="retireChart" height="100"></canvas>
+            </div>
+        </div>
+
+        <!-- Summary Tab -->
+        <div id="content-summary" class="space-y-6 hidden">
+            <!-- Total Overview -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+                    <h3 class="text-lg font-semibold mb-2 opacity-90">总资金需求现值</h3>
+                    <p class="text-4xl font-bold mb-1">¥<span id="totalNeed">0</span>万</p>
+                    <p class="text-sm opacity-75">养老 + 教育</p>
+                </div>
+                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+                    <h3 class="text-lg font-semibold mb-2 opacity-90">已有储蓄</h3>
+                    <p class="text-4xl font-bold mb-1">¥<span id="summarySavings">0</span>万</p>
+                    <p class="text-sm opacity-75">当前储备</p>
+                </div>
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+                    <h3 class="text-lg font-semibold mb-2 opacity-90">净缺口</h3>
+                    <p class="text-4xl font-bold mb-1">¥<span id="netGap">0</span>万</p>
+                    <p class="text-sm opacity-75">需积累资金</p>
+                </div>
+            </div>
+
+            <!-- Monthly Requirement -->
+            <div class="bg-white rounded-xl shadow-md p-8 text-center">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">目标月收入要求</h2>
+                <p class="text-5xl font-bold highlight-number mb-2">¥<span id="requiredIncome">0</span></p>
+                <p class="text-gray-600 mb-6">家庭月总收入（税前估算）</p>
+                
+                <div class="grid md:grid-cols-4 gap-4 max-w-3xl mx-auto text-sm">
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <p class="text-gray-600 mb-1">生活支出</p>
+                        <p class="font-bold text-gray-800">¥<span id="incomeLiving">0</span></p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <p class="text-gray-600 mb-1">教育储蓄</p>
+                        <p class="font-bold text-gray-800">¥<span id="incomeEdu">0</span></p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <p class="text-gray-600 mb-1">养老储蓄</p>
+                        <p class="font-bold text-gray-800">¥<span id="incomeRetire">0</span></p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <p class="text-gray-600 mb-1">社保缴费</p>
+                        <p class="font-bold text-gray-800">¥<span id="incomeSocial">0</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strategy Recommendations -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">📋 综合理财策略建议</h3>
+                <div id="strategyAdvice" class="space-y-4">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+
+            <!-- Sensitivity Analysis -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">参数敏感性分析</h3>
+                <p class="text-sm text-gray-600 mb-4">调整以下参数查看对总需求的影响：</p>
+                <div class="space-y-4">
+                    <div>
+                        <label class="flex justify-between text-sm font-medium text-gray-700 mb-2">
+                            <span>通胀率</span>
+                            <span class="text-blue-600" id="senseInflation">3%</span>
+                        </label>
+                        <input type="range" min="1" max="8" step="0.5" value="3" class="w-full" oninput="updateSensitivity(this.value, 'inflation')">
+                    </div>
+                    <div>
+                        <label class="flex justify-between text-sm font-medium text-gray-700 mb-2">
+                            <span>投资收益率</span>
+                            <span class="text-blue-600" id="senseReturn">5%</span>
+                        </label>
+                        <input type="range" min="2" max="10" step="0.5" value="5" class="w-full" oninput="updateSensitivity(this.value, 'return')">
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <p class="text-sm text-gray-700">在以上参数下，总资金需求变为：<span class="text-2xl font-bold text-blue-600" id="senseTotal">¥0万</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="mt-8 text-center">
+            <button onclick="calculateAll()" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+                🔄 重新计算所有方案
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let eduChartInstance = null;
+        let retireChartInstance = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateAll();
+        });
+
+        function switchTab(tabName) {
+            // Hide all contents
+            document.querySelectorAll('[id^="content-"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.classList.remove('tab-active');
+                el.classList.add('tab-inactive');
+            });
+            
+            // Show selected
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}`).classList.remove('tab-inactive');
+            document.getElementById(`tab-${tabName}`).classList.add('tab-active');
+            
+            // Trigger calculations if needed
+            if (tabName === 'education') calculateEducation();
+            if (tabName === 'retirement') calculateRetirement();
+            if (tabName === 'summary') calculateSummary();
+        }
+
+        function updateValue(inputId, displayId) {
+            const val = document.getElementById(inputId).value;
+            document.getElementById(displayId).textContent = val;
+            calculateAll();
+        }
+
+        function toggleChildrenInputs() {
+            const count = parseInt(document.getElementById('childrenCount').value);
+            document.getElementById('child2Age').classList.toggle('hidden', count < 2);
+            calculateAll();
+        }
+
+        function calculateAll() {
+            calculatePension();
+            calculateEducation();
+            calculateRetirement();
+            calculateSummary();
+        }
+
+        // Pension Calculation
+        function calculatePension() {
+            const avgSalary = parseFloat(document.getElementById('avgSalary').value) || 8000;
+            const level = parseInt(document.getElementById('pensionLevel').value) / 100;
+            const paidYears = parseInt(document.getElementById('paidYears').value);
+            const futureYears = parseInt(document.getElementById('futureYears').value);
+            const retireAge = parseInt(document.getElementById('retireAge').value);
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const inflation = parseFloat(document.getElementById('inflationRate').value) / 100;
+            
+            const totalYears = paidYears + futureYears;
+            const monthlyBase = avgSalary * level;
+            const monthlyPay = monthlyBase * 0.28; // 28% total (20% pool + 8% personal)
+            const personalRate = 0.08;
+            const personalMonthly = monthlyBase * personalRate;
+            
+            // Calculate personal account balance with interest (simplified)
+            let personalBalance = personalMonthly * 12 * paidYears;
+            // Add future contributions with investment return (using pension fund return rate ~3-4%)
+            const pensionReturn = 0.035;
+            for (let i = 0; i < futureYears; i++) {
+                personalBalance = personalBalance * (1 + pensionReturn) + personalMonthly * 12;
+            }
+            
+            // Monthly pension at retirement
+            const months = Math.max(139, (retireAge - 60) * 12 + 139); // simplified计发月数
+            const personalPension = personalBalance / months;
+            
+            // Basic pension
+            const indexedSalary = avgSalary * (1 + level) / 2;
+            const basicPension = indexedSalary * totalYears * 0.01;
+            
+            const totalMonthly = personalPension + basicPension;
+            
+            // Adjust for inflation to current value (rough estimate)
+            const yearsToRetire = retireAge - currentAge;
+            const realMonthlyPension = totalMonthly / Math.pow(1 + inflation, yearsToRetire);
+            
+            // Update display
+            document.getElementById('monthlyPension').textContent = Math.round(realMonthlyPension).toLocaleString();
+            document.getElementById('personalPension').textContent = Math.round(personalPension).toLocaleString();
+            document.getElementById('basicPension').textContent = Math.round(basicPension).toLocaleString();
+            document.getElementById('monthlyPay').textContent = Math.round(monthlyPay).toLocaleString();
+            document.getElementById('totalYears').textContent = totalYears;
+            
+            // Payback calculation
+            const totalPaid = monthlyPay * 12 * totalYears;
+            const paybackMonths = totalPaid / totalMonthly;
+            document.getElementById('paybackYears').textContent = (paybackMonths / 12).toFixed(1);
+            
+            // Advice
+            const adviceDiv = document.getElementById('pensionAdvice');
+            let advice = '';
+            if (totalYears < 15) {
+                advice = `<p class="text-red-600 font-semibold">⚠️ 警告：当前缴费年限不足15年，退休后将无法领取养老金！建议至少缴费满15年。</p>`;
+            } else if (level < 1.0) {
+                advice = `<p>• 当前选择<span class="font-bold">${(level*100).toFixed(0)}%</span>档次，属于较低水平。若经济允许，建议提高至100%-150%档次，可显著提升基础养老金。</p>
+                         <p>• 缴费年限比缴费档次更重要，建议尽可能延长缴费时间。</p>`;
+            } else if (level > 2.0) {
+                advice = `<p>• 您选择了<span class="font-bold">${(level*100).toFixed(0)}%</span>高档次缴费，个人账户积累丰厚。</p>
+                         <p>• 注意：社保有封顶线（300%），超额部分建议通过商业养老保险或个人投资补充。</p>`;
+            } else {
+                advice = `<p>• 当前缴费策略适中，建议保持连续性，避免断缴。</p>
+                         <p>• 若收入波动，可暂时降低档次但保持年限，退休前5年可提高档次提升指数。</p>`;
+            }
+            adviceDiv.innerHTML = advice;
+        }
+
+        // Education Calculation
+        function calculateEducation() {
+            const childrenCount = parseInt(document.getElementById('childrenCount').value);
+            const childAge1 = parseInt(document.getElementById('childAge1').value);
+            const childAge2 = parseInt(document.getElementById('childAge2').value);
+            const currentEduCost = parseFloat(document.getElementById('currentEduCost').value) || 3;
+            const collegeCost = parseFloat(document.getElementById('collegeCost').value) || 4;
+            const inflation = parseFloat(document.getElementById('inflationRate').value) / 100;
+            const investReturn = parseFloat(document.getElementById('investReturn').value) / 100;
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const studyAbroad = parseInt(document.getElementById('studyAbroad').value);
+            const abroadCost = parseFloat(document.getElementById('abroadCost').value) || 30;
+            
+            // Show/hide abroad cost
+            document.getElementById('abroadCostDiv').classList.toggle('hidden', studyAbroad === 0);
+            
+            let totalCost = 0;
+            let breakdown = '';
+            const years = [];
+            const costs = [];
+            
+            function calcChildCost(age, childNum) {
+                let childTotal = 0;
+                const yearsToCollege = 18 - age;
+                const yearsToGraduate = 22 - age;
+                
+                // K-12 costs (increasing with inflation)
+                for (let i = 0; i < yearsToCollege; i++) {
+                    const futureCost = currentEduCost * Math.pow(1 + inflation, i);
+                    childTotal += futureCost;
+                    const year = new Date().getFullYear() + i;
+                    const idx = years.indexOf(year);
+                    if (idx >= 0) {
+                        costs[idx] += futureCost;
+                    } else {
+                        years.push(year);
+                        costs.push(futureCost);
+                    }
+                }
+                
+                // College costs (4 years)
+                for (let i = yearsToCollege; i < yearsToGraduate; i++) {
+                    let yearCost = collegeCost * Math.pow(1 + inflation, i);
+                    if (studyAbroad === 1 && i < yearsToCollege + 4) {
+                        yearCost = abroadCost * Math.pow(1 + inflation, i);
+                    } else if (studyAbroad === 2 && i >= yearsToCollege + 4 - 2) { // Last 2 years master
+                        yearCost = abroadCost * Math.pow(1 + inflation, i);
+                    }
+                    childTotal += yearCost;
+                    const year = new Date().getFullYear() + i;
+                    const idx = years.indexOf(year);
+                    if (idx >= 0) {
+                        costs[idx] += yearCost;
+                    } else {
+                        years.push(year);
+                        costs.push(yearCost);
+                    }
+                }
+                
+                return { total: childTotal, yearsToEnd: yearsToGraduate };
+            }
+            
+            const result1 = calcChildCost(childAge1, 1);
+            totalCost += result1.total;
+            breakdown += `<div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                <span class="text-sm text-gray-700">孩子1（当前${childAge1}岁）</span>
+                <span class="font-bold text-green-700">${result1.total.toFixed(1)}万</span>
+            </div>`;
+            
+            if (childrenCount >= 2) {
+                const result2 = calcChildCost(childAge2, 2);
+                totalCost += result2.total;
+                breakdown += `<div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                    <span class="text-sm text-gray-700">孩子2（当前${childAge2}岁）</span>
+                    <span class="font-bold text-green-700">${result2.total.toFixed(1)}万</span>
+                </div>`;
+            }
+            
+            // Calculate monthly savings needed
+            const maxYears = Math.max(result1.yearsToEnd, childrenCount >= 2 ? (22 - childAge2) : 0);
+            const monthlySave = calculatePMT(investReturn/12, maxYears * 12, 0, totalCost * 10000) / 10000;
+            
+            document.getElementById('totalEduCost').textContent = totalCost.toFixed(1);
+            document.getElementById('eduBreakdown').innerHTML = breakdown;
+            document.getElementById('monthlyEduSave').textContent = (monthlySave * 10000).toFixed(0);
+            document.getElementById('eduReturnRate').textContent = (investReturn * 100).toFixed(1);
+            
+            // Update chart
+            updateEduChart(years.sort((a,b) => a-b), costs);
+        }
+
+        // Retirement Calculation
+        function calculateRetirement() {
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const retireAge = parseInt(document.getElementById('retireAge').value);
+            const lifeExpectancy = parseInt(document.getElementById('lifeExpectancy').value);
+            const currentLiving = parseFloat(document.getElementById('currentLivingCost').value) || 8000;
+            const quality = parseFloat(document.getElementById('retireQuality').value);
+            const medical = parseFloat(document.getElementById('medicalReserve').value) || 30;
+            const inflation = parseFloat(document.getElementById('inflationRate').value) / 100;
+            const investReturn = parseFloat(document.getElementById('investReturn').value) / 100;
+            const monthlyPension = parseFloat(document.getElementById('monthlyPension').textContent.replace(/,/g, '')) || 0;
+            
+            const yearsToRetire = retireAge - currentAge;
+            const retireYears = lifeExpectancy - retireAge;
+            
+            // Future living cost at retirement
+            const futureMonthlyLiving = currentLiving * quality * Math.pow(1 + inflation, yearsToRetire);
+            const totalLivingNeeded = futureMonthlyLiving * 12 * retireYears;
+            
+            // Total pension received (simplified, not inflation adjusted for display)
+            const totalPension = monthlyPension * 12 * retireYears / 10000; // convert to 万
+            
+            // Gap calculation
+            const totalNeed = (totalLivingNeeded * Math.pow(1 + inflation, retireYears/2) / 10000) + medical; // rough inflation adjustment
+            const gap = Math.max(0, totalNeed - totalPension);
+            
+            // Monthly savings needed
+            const monthlySave = calculatePMT(investReturn/12, yearsToRetire * 12, 0, gap * 10000) / 10000;
+            
+            document.getElementById('totalRetireNeed').textContent = totalNeed.toFixed(1);
+            document.getElementById('pensionCover').textContent = totalPension.toFixed(1);
+            document.getElementById('retirementGap').textContent = gap.toFixed(1);
+            document.getElementById('monthlyRetireSave').textContent = (monthlySave * 10000).toFixed(0);
+            
+            // Save ratio estimate (assuming current income is 1.5x living cost)
+            const estimatedIncome = currentLiving * 1.5;
+            const saveRatio = (monthlySave * 10000 / estimatedIncome * 100).toFixed(1);
+            document.getElementById('saveRatio').textContent = saveRatio + '%';
+            
+            // Update chart
+            updateRetireChart(retireAge, lifeExpectancy, monthlyPension, futureMonthlyLiving);
+        }
+
+        // Summary Calculation
+        function calculateSummary() {
+            const currentSavings = parseFloat(document.getElementById('currentSavings').value) || 0;
+            const totalEdu = parseFloat(document.getElementById('totalEduCost').textContent) || 0;
+            const totalRetire = parseFloat(document.getElementById('totalRetireNeed').textContent) || 0;
+            const pensionCover = parseFloat(document.getElementById('pensionCover').textContent) || 0;
+            const monthlyEdu = parseFloat(document.getElementById('monthlyEduSave').textContent) || 0;
+            const monthlyRetire = parseFloat(document.getElementById('monthlyRetireSave').textContent) || 0;
+            const monthlySocial = parseFloat(document.getElementById('monthlyPay').textContent) || 0;
+            const currentLiving = parseFloat(document.getElementById('currentLivingCost').value) || 8000;
+            
+            const totalNeed = totalEdu + totalRetire;
+            const netGap = Math.max(0, totalNeed - currentSavings - pensionCover);
+            const totalMonthly = currentLiving + monthlyEdu + monthlyRetire + monthlySocial;
+            const requiredIncome = totalMonthly * 1.3; // Assuming 30% tax and other deductions
+            
+            document.getElementById('totalNeed').textContent = totalNeed.toFixed(1);
+            document.getElementById('summarySavings').textContent = currentSavings.toFixed(1);
+            document.getElementById('netGap').textContent = netGap.toFixed(1);
+            document.getElementById('requiredIncome').textContent = Math.round(requiredIncome).toLocaleString();
+            
+            document.getElementById('incomeLiving').textContent = currentLiving.toLocaleString();
+            document.getElementById('incomeEdu').textContent = Math.round(monthlyEdu).toLocaleString();
+            document.getElementById('incomeRetire').textContent = Math.round(monthlyRetire).toLocaleString();
+            document.getElementById('incomeSocial').textContent = Math.round(monthlySocial).toLocaleString();
+            
+            // Strategy advice
+            const yearsToRetire = parseInt(document.getElementById('retireAge').value) - parseInt(document.getElementById('currentAge').value);
+            let strategy = '';
+            
+            if (netGap <= 0) {
+                strategy = `<div class="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                    <h4 class="font-bold text-green-800 mb-2">🎉 财务状况良好</h4>
+                    <p>您的当前储蓄加上社保基本可以覆盖未来的教育和养老需求。建议：</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-gray-700">
+                        <li>保持当前储蓄率，可适当提高生活质量</li>
+                        <li>考虑增加商业医疗保险覆盖</li>
+                        <li>剩余资金可配置部分权益类资产提高收益</li>
+                    </ul>
+                </div>`;
+            } else if (yearsToRetire > 20) {
+                strategy = `<div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                    <h4 class="font-bold text-blue-800 mb-2">⏰ 长期规划建议（${yearsToRetire}年准备期）</h4>
+                    <p>您有充足的时间准备，建议采用"定投+复利"策略：</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-gray-700">
+                        <li>每月定投指数基金${Math.round(monthlyEdu + monthlyRetire)}元，利用时间平滑市场波动</li>
+                        <li>社保维持100%-150%档次，确保基础保障</li>
+                        <li>建立应急基金（6个月支出）后，剩余资金投入权益类资产</li>
+                        <li>每5年复核一次规划，根据收入调整</li>
+                    </ul>
+                </div>`;
+            } else {
+                strategy = `<div class="p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                    <h4 class="font-bold text-orange-800 mb-2">⚡ 短期冲刺建议（${yearsToRetire}年准备期）</h4>
+                    <p>准备时间紧张，需要提高储蓄率和投资收益：</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-gray-700">
+                        <li>立即削减非必要支出，提高储蓄率至30%以上</li>
+                        <li>考虑延长工作年限至65岁，减少养老金领取年限</li>
+                        <li>社保提高至最高档（300%），最大化基础养老金</li>
+                        <li>考虑副业或资产变现补充资金缺口</li>
+                    </ul>
+                </div>`;
+            }
+            
+            document.getElementById('strategyAdvice').innerHTML = strategy;
+        }
+
+        // Sensitivity Analysis
+        function updateSensitivity(value, type) {
+            if (type === 'inflation') {
+                document.getElementById('senseInflation').textContent = value + '%';
+            } else {
+                document.getElementById('senseReturn').textContent = value + '%';
+            }
+            
+            // Recalculate with new values
+            const inflation = parseFloat(document.getElementById('senseInflation').textContent) / 100;
+            const ret = parseFloat(document.getElementById('senseReturn').textContent) / 100;
+            
+            // Simplified recalculation for display
+            const baseEdu = parseFloat(document.getElementById('totalEduCost').textContent) * (1 + (inflation - 0.03) * 5);
+            const baseRetire = parseFloat(document.getElementById('totalRetireNeed').textContent) * (1 + (inflation - 0.03) * 10);
+            const newTotal = baseEdu + baseRetire;
+            
+            document.getElementById('senseTotal').textContent = '¥' + newTotal.toFixed(1) + '万';
+        }
+
+        // Helper: PMT calculation
+        function calculatePMT(rate, nper, pv, fv) {
+            if (rate === 0) return -(pv + fv) / nper;
+            const pvif = Math.pow(1 + rate, nper);
+            let pmt = -rate * (pv * pvif + fv) / (pvif - 1);
+            return pmt;
+        }
+
+        // Charts
+        function updateEduChart(years, costs) {
+            const ctx = document.getElementById('eduChart').getContext('2d');
+            if (eduChartInstance) eduChartInstance.destroy();
+            
+            eduChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: '当年教育支出（万元）',
+                        data: costs.map(c => c.toFixed(2)),
+                        backgroundColor: 'rgba(72, 187, 120, 0.6)',
+                        borderColor: 'rgba(72, 187, 120, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: '金额（万元）' } }
+                    }
+                }
+            });
+        }
+
+        function updateRetireChart(retireAge, lifeExpectancy, pension, living) {
+            const ctx = document.getElementById('retireChart').getContext('2d');
+            if (retireChartInstance) retireChartInstance.destroy();
+            
+            const years = [];
+            const pensionData = [];
+            const expenseData = [];
+            
+            for (let age = retireAge; age <= lifeExpectancy; age++) {
+                years.push(age + '岁');
+                pensionData.push(pension);
+                expenseData.push(living);
+            }
+            
+            retireChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: '每月养老金',
+                        data: pensionData,
+                        borderColor: 'rgba(66, 153, 225, 1)',
+                        backgroundColor: 'rgba(66, 153, 225, 0.1)',
+                        fill: true
+                    }, {
+                        label: '每月生活支出',
+                        data: expenseData,
+                        borderColor: 'rgba(245, 101, 101, 1)',
+                        backgroundColor: 'rgba(245, 101, 101, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: '金额（元）' } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
